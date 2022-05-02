@@ -108,43 +108,43 @@ router.delete('/:id',verify, async(req, res)=>{
 router.patch('/:id', verify, async(req, res)=>{
     try{
 
-        const {error} = updateUserValidate(req.body);
+        const { error } = updateUserValidate(req.body);
         if(error){
             res.status(400).send(error.details[0].message);
         }
         else{
             const token = req.header('auth-token');
-        const user = await User.findOne({_id: req.params.id});
-        if(!user){
-            res.status(401).send({message: "User does not exists"});
-        }
-        else{
-            if(user.role == 'A'){
-                res.status(400).send({message: "Invalid Access"});
+            const user = await User.findOne({_id: req.params.id});
+            if(!user){
+                res.status(401).send({message: "User does not exists"});
             }
             else{
-                const now = new Date();
-                const updateTime = date.format(now, 'YYYY/MM/DD HH:mm:ss');
-                const updateUser = await User.updateOne(
-                    {
-                        _id: req.params.id
-                    },
-                    {
-                        $set: {
-                            first_name: req.body.first_name,
-                            middle_name: req.body.middle_name,
-                            last_name: req.body.last_name,
-                            email: req.body.email,
-                            department: req.body.department,
-                            updateDate: updateTime,
-                        }
-                    },
-                );
-                const user = await User.findOne({_id: req.params.id});
-                res.status(200).send({updateUser: updateUser, user: user, jwt: token});
+                if(user.role == 'A'){
+                    res.status(400).send({message: "Invalid Access"});
+                }
+                else{
+                    const now = new Date();
+                    const updateTime = date.format(now, 'YYYY/MM/DD HH:mm:ss');
+                    const updateUser = await User.updateOne(
+                        {
+                            _id: req.params.id
+                        },
+                        {
+                            $set: {
+                                first_name: req.body.first_name,
+                                middle_name: req.body.middle_name,
+                                last_name: req.body.last_name,
+                                email: req.body.email,
+                                department: req.body.department,
+                                updateDate: updateTime,
+                            }
+                        },
+                    );
+                    const user = await User.findOne({_id: req.params.id});
+                    res.status(200).send({updateUser: updateUser, user: user, jwt: token});
+                }
+                
             }
-            
-        }
         }   
     }catch(e){
         console.log(e);

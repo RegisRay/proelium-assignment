@@ -28,7 +28,8 @@ const updateUserValidate = (data) =>{
         middle_name: Joi.string(),
         email: Joi.string().email(),
         department: Joi.string()
-    })
+    });
+    return schema.validate(data);
 }
 
 
