@@ -13,10 +13,10 @@ app.listen(3000);
 
 //Import Routes
 
-const userRoute = require('./routes/user');
-
-app.use('/posts', postsRoute);
+const userRoute = require('./routes/auth/auth');
+const postRoute = require('./routes/post/post');
 app.use('/user', userRoute);
+app.use('/post',postRoute);
 
 //Connect with DB
 

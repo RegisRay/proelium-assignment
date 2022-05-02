@@ -12,7 +12,8 @@ const UserSchema = mongoose.Schema({
     },
     email:{
         type: String,
-        required: true
+        required: true,
+        min: 7
     },
     password:{
         type: String,
@@ -21,6 +22,7 @@ const UserSchema = mongoose.Schema({
     role:{
         type: String,
         required: true,
+        max: 1
     },
     department: String,
     createTime:{
