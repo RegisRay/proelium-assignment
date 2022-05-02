@@ -3,7 +3,7 @@ const User = require('../../models/User');
 const bcrypt = require('bcryptjs'); 
 const router = express.Router();
 const date = require('date-and-time')
-const {registerValidate, loginValidate} = require('../../validate');
+const {registerValidate, updateUserValidate} = require('../../validate');
 const { findOne } = require('../../models/User');
 const verify = require('../verifyToken');
 
@@ -83,7 +83,13 @@ router.delete('/:id',verify, async(req, res)=>{
 
 router.patch('/:id', verify, async(req, res)=>{
     try{
-        const token = req.header('auth-token');
+
+        const {error} = updateUserValidate(req.body);
+        if(error){
+            res.status(400).send(error.details[0].message);
+        }
+        else{
+            const token = req.header('auth-token');
         const user = await User.findOne({_id: req.params.id});
         if(!user){
             res.status(401).send({message: "User does not exists"});
@@ -101,6 +107,7 @@ router.patch('/:id', verify, async(req, res)=>{
                         middle_name: req.body.middle_name,
                         last_name: req.body.last_name,
                         email: req.body.email,
+                        department: req.body.department,
                         updateDate: updateTime,
                     }
                 },
@@ -108,6 +115,7 @@ router.patch('/:id', verify, async(req, res)=>{
             const user = await User.findOne({_id: req.params.id});
             res.status(200).send({updateUser: updateUser, user: user, jwt: token});
         }
+        }   
     }catch(e){
         console.log(e);
         res.status(500).send({message: e});
