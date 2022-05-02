@@ -14,7 +14,9 @@ app.listen(3000);
 //Import Routes
 
 const userRoute = require('./routes/auth/auth');
-app.use('/user', userRoute);
+const adminRoute = require('./routes/admin/admin');
+app.use('/auth', userRoute);
+app.use('/admin', adminRoute);
 
 //Connect with DB
 

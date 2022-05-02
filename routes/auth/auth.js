@@ -1,8 +1,7 @@
-const express = require('express');
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); 
-const router = express.Router();
+const router = require('express').Router();
 const {registerValidate, loginValidate} = require('../../validate');
 const { findOne } = require('../../models/User');
 
@@ -61,8 +60,21 @@ router.post('/login', async(req, res)=>{
                 res.status(400).send({message: "Invalid passowrd"});
             }
             else{
-                const token = jwt.sign({_id: user._id, role: user.role}, process.env.TOKEN_SECRET);
-                res.status(200).header('auth-token', token).send({login: user, jwt: token});
+                const token = jwt.sign(
+                    {
+                        _id: user._id, role: user.role
+                    },
+                     process.env.TOKEN_SECRET,
+                     {
+                        expiresIn: "12h",
+                     }
+                );
+                delete user['password'];
+                res.status(200).header('auth-token', token).send(
+                    {
+                    login: user, jwt: token
+                    }
+                );
             }
         }
     }
